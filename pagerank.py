@@ -6,11 +6,14 @@ Méthode qui récupère en argument le nom du fichier csv et rempli un matrice �
 dernier. Il appelle ensuite la méthode pageRankScore qui retournera le score pageRank.
 """
 def main(argv):
-	path_file = argv[0]
-	A = np.loadtxt(path_file, delimiter=",", dtype=np.int)
-	A = np.asmatrix(A)
+	path_file = argv[0] # Récupère le chemin du fichier placé en argument
+	A = np.loadtxt(path_file, delimiter=",", dtype=np.int) # Converti le fichier cs en une array
+	A = np.asmatrix(A) # Converti np.array en np.matrix
 	xt = pageRankScore(A)
-	print(xt)
+	if xt is None:
+		printf("Erreur dans le calcul")
+	else:
+		print(xt)
 
 """
 Méthode implémentant la power method de façon de récursive jusqu'à ce que 
@@ -29,21 +32,23 @@ la matrice de probabilité de transition et la matrice Google puis fait appelle 
 afin de calculé le score pagerank.
 """
 def pageRankScore(A, alpha=0.9):
-	Aout = np.sum(A,axis=1)
-	Ain = np.sum(A,axis=0)
-	#print(Aout[:,np.newaxis].shape)
-	P = A / Aout[:]
+	Aout = np.sum(A,axis=1) # Vecteur des degrés sortant
+	Ain = np.sum(A,axis=0) # Vecteur des degrés entrant
+	P = A / Aout[:] # Calcul de la matrice de probabilité de transition
 
+	# Calcul de la matrice Google
 	G = np.zeros(A.shape)
 	for i in range(A.shape[0]):
 		for j in range(A.shape[0]):
 			G[i,j] = alpha * P[i,j] + (1 - alpha)*(1/A.shape[0])
 
+	# Initialisation des scores par les degrés entrant
 	xt = Ain / np.sum(Ain)
-	print(xt)
+	# Appele de la power method
 	xt = powerMethod(G,xt)
-	#Verifier si le calcul c'est bien déroulé xt doit être le même que le précédent calculé
-	xt = xt / np.sum(xt)
+	# Test final pour savoir si tout c'est bien passé
+	if(np.sum(xt) != 1):
+		return None
 
 	return np.asarray(xt)
 
