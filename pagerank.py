@@ -11,7 +11,7 @@ def main(argv):
 	A = np.asmatrix(A) # Converti np.array en np.matrix
 	xt = pageRankScore(A)
 	if xt is None:
-		printf("Erreur dans le calcul")
+		print("Erreur dans le calcul")
 	else:
 		print(xt)
 
